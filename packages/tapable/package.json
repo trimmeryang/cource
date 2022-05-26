@@ -1,0 +1,20 @@
+{
+  "name": "@course/tapable",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "SyncHook": "node src",
+    "SyncBailHook": "node src/SyncBailHook",
+    "SyncWaterfallHook": "node src/SyncWaterfallHook",
+    "SyncLoopHook": "node src/SyncLoopHook",
+    "AsyncParallelHook": "node src/AsyncParallelHook",
+    "AsyncParallelBailHook": "node src/AsyncParallelBailHook",
+    "AsyncSeriesHook": "node src/AsyncSeriesHook",
+    "AsyncSeriesBailHook": "node src/AsyncSeriesBailHook",
+    "AsyncSeriesWaterfallHook": "node src/AsyncSeriesWaterfallHook"
+  },
+  "dependencies": {
+    "tapable": "^2.2.1"
+  },
+  "license": "MIT"
+}
