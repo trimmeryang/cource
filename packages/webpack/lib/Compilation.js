@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const parser = require("@babel/parser");
-const traverse = require("@babel/traverse").default;
-const { transformFromAst } = require("babel-core");
+const fs = require('fs');
+const path = require('path');
+const parser = require('@babel/parser');
+const traverse = require('@babel/traverse').default;
+const { transformFromAst } = require('babel-core');
 
 class Compilation {
   constructor(compiler) {
@@ -12,11 +12,15 @@ class Compilation {
     this.chunks = [];
   }
 
+  addEntry(callback) {
+    this.build(callback);
+  }
+
   build(sealCallback) {
-    console.log("start build");
+    console.log('start build');
 
     const runLoaders = (filePath) => {
-      let content = fs.readFileSync(filePath, "utf-8");
+      let content = fs.readFileSync(filePath, 'utf-8');
       this.loaders.forEach((loaderPath) => {
         const loader = require(loaderPath);
         content = loader(content);
@@ -25,7 +29,7 @@ class Compilation {
     };
 
     const parse = (content) => {
-      return parser.parse(content, { sourceType: "module" });
+      return parser.parse(content, { sourceType: 'module' });
     };
 
     const getModuleDependencies = (ast) => {
@@ -33,15 +37,13 @@ class Compilation {
       traverse(ast, {
         ImportDeclaration: ({ node }) => {
           dependencies.push(node.source.value);
-        },
+        }
       });
       return dependencies;
     };
 
     const buildModule = (filename, isEntry) => {
-      const filePath = isEntry
-        ? filename
-        : path.join(process.cwd(), "./src", filename);
+      const filePath = isEntry ? filename : path.join(process.cwd(), './src', filename);
 
       // runLoaders 使用loader翻译文件
       const source = runLoaders(filePath);
@@ -55,7 +57,7 @@ class Compilation {
       return {
         filename,
         ast,
-        dependencies,
+        dependencies
       };
     };
 
@@ -68,18 +70,18 @@ class Compilation {
       });
     });
 
-    console.log("end build");
+    console.log('end build');
 
     // 解析完成，回到call make的callback中即compilation.seal()
     sealCallback();
   }
 
   seal(emitCallback) {
-    console.log("start seal");
-    let chunks = "";
+    console.log('start seal');
+    let chunks = '';
     this.modules.forEach((_module) => {
       const { code: transformedCode } = transformFromAst(_module.ast, null, {
-        presets: ["env"],
+        presets: ['env']
       });
       chunks += `\n '${_module.filename}': function(require, module, exports) { \n ${transformedCode} \n }, \n`;
     });
